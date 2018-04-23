@@ -4,7 +4,7 @@ NTVL_OSNAME=$(shell uname -s)
 
 ########
 
-CC=gcc
+CC=arm-linux-androideabi-gcc
 DEBUG?=-g3
 
 #OPTIONS=-static
