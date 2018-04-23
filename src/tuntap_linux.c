@@ -64,7 +64,7 @@ int tuntap_open(tuntap_dev *device,
                 char *device_mask,
                 const char * device_mac,
 		int mtu) {
-  char *tuntap_device = "/dev/net/tun";
+  char *tuntap_device = "/dev/tun";
 #define NTVL_LINUX_SYSTEMCMD_SIZE 128
   char buf[NTVL_LINUX_SYSTEMCMD_SIZE];
   struct ifreq ifr;
@@ -92,17 +92,17 @@ int tuntap_open(tuntap_dev *device,
 
   if ( device_mac && device_mac[0] != '\0' ) {
       /* Set the hw address before bringing the if up. */
-      snprintf(buf, sizeof(buf), "/sbin/ifconfig %s hw ether %s",
+      snprintf(buf, sizeof(buf), "/system/xbin/busybox ifconfig %s hw ether %s",
                ifr.ifr_name, device_mac );
       system(buf);
       traceEvent(TRACE_INFO, "Setting MAC: %s", buf);
   }
 
   if ( 0 == strncmp( "dhcp", address_mode, 5 ) ) {
-      snprintf(buf, sizeof(buf), "/sbin/ifconfig %s %s mtu %d up",
+      snprintf(buf, sizeof(buf), "/system/xbin/busybox ifconfig %s %s mtu %d up",
                ifr.ifr_name, device_ip, mtu);
   } else {
-      snprintf(buf, sizeof(buf), "/sbin/ifconfig %s %s netmask %s mtu %d up",
+      snprintf(buf, sizeof(buf), "/system/xbin/busybox ifconfig %s %s netmask %s mtu %d up",
                ifr.ifr_name, device_ip, device_mask, mtu);
   }
 
@@ -139,7 +139,7 @@ void tuntap_get_address(struct tuntap_dev *tuntap) {
 
     /* If the interface has no address (0.0.0.0) there will be no inet addr
      * line and the returned string will be empty. */
-    snprintf( buf, sizeof(buf), "/sbin/ifconfig %s | /bin/sed -e '/inet addr:/!d' -e 's/^.*inet addr://' -e 's/ .*$//'",
+    snprintf( buf, sizeof(buf), "/system/xbin/busybox ifconfig %s | /system/xbin/busybox sed -e '/inet addr:/!d' -e 's/^.*inet addr://' -e 's/ .*$//'",
               tuntap->dev_name );
     fp=popen(buf, "r");
     if (fp ) {
