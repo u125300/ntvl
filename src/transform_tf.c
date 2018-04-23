@@ -5,7 +5,7 @@
 #include "twofish.h"
 #ifndef _MSC_VER
 /* Not included in Visual Studio 2008 */
-#include <strings.h> /* index() */
+#include <strings.h> /* strchr() */
 #endif
 
 #define NTVL_TWOFISH_NUM_SA              32 /* space for SAa */
@@ -14,7 +14,7 @@
 
 struct sa_twofish {
     ntvl_cipherspec_t    spec;   /* cipher spec parameters */
-    ntvl_sa_t            sa_id;  /* security association index */
+    ntvl_sa_t            sa_id;  /* security association strchr */
     TWOFISH *           enc_tf; /* tx state */
     TWOFISH *           dec_tf; /* rx state */
 };
@@ -102,7 +102,7 @@ static int transop_encode_twofish( ntvl_trans_op_t * arg,
             /* The transmit sa is periodically updated */
             tx_sa_num = tf_choose_tx_sa( priv );
 
-            sa = &(priv->sa[tx_sa_num]); /* Proper Tx SA index */
+            sa = &(priv->sa[tx_sa_num]); /* Proper Tx SA strchr */
         
             traceEvent( TRACE_DEBUG, "encode_twofish %lu with SA %lu.", in_len, sa->sa_id );
             
@@ -135,7 +135,7 @@ static int transop_encode_twofish( ntvl_trans_op_t * arg,
 
 /* Search through the array of SAs to find the one with the required ID.
  *
- * @return array index where found or -1 if not found
+ * @return array strchr where found or -1 if not found
  */
 static ssize_t twofish_find_sa( const transop_tf_t * priv, const ntvl_sa_t req_id ) {
     size_t i;
@@ -229,7 +229,7 @@ static int transop_addspec_twofish( ntvl_trans_op_t * arg, const ntvl_cipherspec
 
     if ( priv->num_sa < NTVL_TWOFISH_NUM_SA ) {
         const char * op = (const char *)cspec->opaque;
-        const char * sep = index( op, '_' );
+        const char * sep = strchr( op, '_' );
 
         if ( sep ) {
             char tmp[256];
@@ -368,7 +368,7 @@ int transop_twofish_init( ntvl_trans_op_t * ttt ) {
         /* install the private structure. */
         ttt->priv = priv;
         priv->num_sa=0;
-        priv->tx_sa=0; /* We will use this sa index for encoding. */
+        priv->tx_sa=0; /* We will use this sa strchr for encoding. */
 
         ttt->transform_id = NTVL_TRANSFORM_ID_TWOFISH;
         ttt->addspec = transop_addspec_twofish;
